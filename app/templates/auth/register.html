@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Create account · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<h1>Create your account</h1><p>Use your campus account details to join the community.</p>
+<form class="card" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="name">Name</label><input id="name" name="name" maxlength="80" autocomplete="name" required value="{{ name }}">
+  <label for="email">Email</label><input id="email" name="email" type="email" maxlength="255" autocomplete="email" required value="{{ email }}">
+  <label for="password">Password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+  <label for="confirmation">Confirm password</label><input id="confirmation" name="confirmation" type="password" minlength="8" autocomplete="new-password" required>
+  <button type="submit">Create account</button>
+  <p class="muted">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a>.</p>
+</form>
+{% endblock %}

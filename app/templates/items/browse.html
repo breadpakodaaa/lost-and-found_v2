@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Browse items · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">CAMPUS LISTINGS</p><h1>Browse items</h1>
+<div class="tabs"><a class="{% if report_type == 'all' %}selected{% endif %}" href="{{ url_for('items.browse', type='all') }}">All</a><a class="{% if report_type == 'lost' %}selected{% endif %}" href="{{ url_for('items.browse', type='lost') }}">Lost</a><a class="{% if report_type == 'found' %}selected{% endif %}" href="{{ url_for('items.browse', type='found') }}">Found</a></div>
+<form class="filters" method="get">
+  <input type="hidden" name="type" value="{{ report_type }}">
+  <label>Item name<input name="name" value="{{ filters.name }}" placeholder="Search names"></label>
+  <label>Location<input name="location" value="{{ filters.location }}" placeholder="Search locations"></label>
+  <label>Category<select name="category"><option value="">Any category</option>{% for category in categories %}<option value="{{ category }}" {% if filters.category == category %}selected{% endif %}>{{ category }}</option>{% endfor %}</select></label>
+  <label>Date<input name="date" type="date" value="{{ filters.date }}"></label>
+  <button type="submit">Search</button><a class="clear" href="{{ url_for('items.browse', type=report_type) }}">Clear</a>
+</form>
+{% if not items %}<section class="empty"><h2>No listings found</h2><p>Try another search, or report an item to get started.</p></section>{% else %}
+<p class="muted">{{ items|length }} listing{% if items|length != 1 %}s{% endif %}</p>
+<section class="item-grid">{% for item in items %}<article class="item-card">
+  {% if item.image_filename %}<img class="item-image" src="{{ url_for('static', filename='uploads/' ~ item.image_filename) }}" alt="Photo of {{ item.name }}">{% else %}<div class="item-placeholder">{{ 'LOST' if item.report_type == 'lost' else 'FOUND' }}</div>{% endif %}
+  <div class="item-content"><div class="item-meta"><span class="badge {{ item.report_type }}">{{ item.report_type }}</span><span>{{ item.status }}</span></div><h2>{{ item.name }}</h2><p>{{ item.description }}</p><dl><dt>Category</dt><dd>{{ item.category }}</dd><dt>Location</dt><dd>{{ item.location }}</dd><dt>Date</dt><dd>{{ item.item_date.strftime('%b %d, %Y') }}</dd>{% if item.colour %}<dt>Colour</dt><dd>{{ item.colour }}</dd>{% endif %}</dl>{% if current_user and current_user.id == item.user_id and item.status in ['active', 'available'] %}<a href="{{ url_for('items.matches', item_id=item.id) }}">Review possible matches →</a>{% elif current_user and item.report_type == 'found' and item.status == 'available' %}<a class="button" href="{{ url_for('claims.new', item_id=item.id) }}">Claim this item</a>{% endif %}</div>
+</article>{% endfor %}</section>
+{% endif %}
+<style>
+  .tabs{display:flex;gap:8px;margin:24px 0}.tabs a{padding:9px 15px;border-radius:20px;text-decoration:none;background:white;color:#555}.tabs a.selected{background:#23251f;color:white}
+  .filters{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;align-items:end;background:white;padding:18px;border:1px solid #e8e6df;border-radius:14px}.filters label{margin:0;font-size:12px}.filters input,.filters select{display:block;margin-top:6px;width:100%;padding:10px;border:1px solid #deddd7;border-radius:8px;font:inherit}.filters button{margin:0}.clear{padding:12px}.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;margin-top:18px}.item-card{overflow:hidden;background:white;border:1px solid #e8e6df;border-radius:15px}.item-image,.item-placeholder{width:100%;height:170px;object-fit:cover}.item-placeholder{display:grid;place-items:center;background:#e8e9dc;color:#525b45;font-weight:750;letter-spacing:2px}.item-content{padding:17px}.item-content h2{margin:10px 0;font-size:21px}.item-content p{margin:0 0 12px}.item-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#777}.badge{border-radius:15px;padding:5px 10px;text-transform:capitalize}.badge.lost{background:#fae0d8;color:#7e3e2a}.badge.found{background:#e5edda;color:#405c35}.item-card dl{display:grid;grid-template-columns:76px 1fr;gap:5px;margin:14px 0 0;font-size:13px}.item-card dt{color:#777}.item-card dd{margin:0}.empty{padding:32px;background:white;border-radius:14px;margin-top:18px}@media(max-width:800px){.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.filters{grid-template-columns:1fr}}
+</style>
+{% endblock %}

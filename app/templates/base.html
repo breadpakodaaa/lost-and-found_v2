@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Campus Lost &amp; Found{% endblock %}</title>
+  <style>
+    :root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #242421; background: #f7f6f2; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; grid-template-columns: 220px 1fr; }
+    aside { background: #171815; color: #fff; padding: 28px 20px; }
+    .brand { font-size: 18px; font-weight: 750; margin: 0 0 38px; }
+    aside a { display: block; padding: 11px 12px; color: #d8d8d2; text-decoration: none; border-radius: 9px; margin: 5px 0; }
+    aside a:hover, aside a.active { color: #fff; background: #33352f; }
+    main { width: min(1100px, 100%); padding: 38px clamp(22px, 5vw, 64px); }
+    .topline { display: flex; justify-content: flex-end; gap: 12px; align-items: center; min-height: 28px; }
+    a { color: #3c5744; }
+    .card { background: #fff; border: 1px solid #e8e6df; border-radius: 16px; padding: 28px; max-width: 570px; box-shadow: 0 8px 24px #26251b0a; }
+    h1 { font-size: clamp(28px, 4vw, 42px); letter-spacing: -1.2px; margin: 24px 0 8px; }
+    p { line-height: 1.6; color: #66665f; }
+    label { display: block; font-size: 14px; font-weight: 650; margin: 17px 0 7px; }
+    input { width: 100%; padding: 12px 13px; border: 1px solid #d9d8d0; border-radius: 9px; font: inherit; }
+    button, .button { display: inline-block; border: 0; border-radius: 9px; padding: 12px 17px; background: #23251f; color: white; font: inherit; font-weight: 650; text-decoration: none; cursor: pointer; margin-top: 18px; }
+    .flash { padding: 12px 14px; border-radius: 9px; margin: 10px 0; background: #edf4e9; }
+    .flash.error { background: #fff0ec; color: #883d2a; }
+    .muted { font-size: 14px; }
+    @media (max-width: 700px) { body { grid-template-columns: 1fr; } aside { padding: 16px; } .brand { margin: 0 0 12px; } aside nav { display: flex; flex-wrap: wrap; } main { padding: 24px 16px; } }
+  </style>
+</head>
+<body>
+  <aside>
+    <p class="brand">Campus<br>Lost &amp; Found</p>
+    <nav aria-label="Main navigation">
+      <a href="{{ url_for('index') }}">Home</a>
+      {% if current_user %}<a href="{{ url_for('dashboard.index') }}">My dashboard</a>{% if current_user.role == 'admin' %}<a href="{{ url_for('admin.index') }}">Admin tools</a>{% endif %}{% else %}<a href="{{ url_for('auth.login') }}">Sign in</a>{% endif %}
+      <a href="{{ url_for('items.browse') }}">Browse items</a>
+      {% if current_user %}<a href="{{ url_for('items.report', report_type='lost') }}">Report lost</a><a href="{{ url_for('items.report', report_type='found') }}">Report found</a>{% endif %}
+    </nav>
+  </aside>
+  <main>
+    <div class="topline">
+      {% if current_user %}<span class="muted">{{ current_user.name }}</span><form method="post" action="{{ url_for('auth.logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button style="margin:0">Sign out</button></form>
+      {% else %}<a href="{{ url_for('auth.login') }}">Sign in</a><a href="{{ url_for('auth.register') }}">Create account</a>{% endif %}
+    </div>
+    {% for category, message in get_flashed_messages(with_categories=true) %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

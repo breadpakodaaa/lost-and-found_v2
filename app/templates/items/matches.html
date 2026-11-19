@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Possible matches · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">MATCH REVIEW</p><h1>Possible matches</h1>
+<p>Suggestions for your <strong>{{ item.report_type }} report: {{ item.name }}</strong>. Scores are clues for human review, not confirmation that two reports describe the same item.</p>
+<section class="match-guide"><strong>How to read scores</strong><span>90–100% Very strong</span><span>70–89% Possible</span><span>50–69% Weak</span></section>
+{% if not matches %}<section class="empty"><h2>No suggestions yet</h2><p>We only show opposite-type reports with a score of at least {{ config.MATCH_MIN_SCORE }}%. New reports may create suggestions later.</p><a href="{{ url_for('items.browse', type='all') }}">Browse all listings</a></section>{% else %}
+<section class="match-list">{% for match in matches %}<article class="match-card">
+  <header><span class="badge {{ match.item.report_type }}">{{ match.item.report_type }}</span><strong class="score">{{ match.score }}%</strong></header>
+  <h2>{{ match.item.name }}</h2><p>{{ match.label }}</p><p>{{ match.item.description }}</p>
+  <dl><dt>Category</dt><dd>{{ match.item.category }}</dd><dt>Location</dt><dd>{{ match.item.location }}</dd><dt>Date</dt><dd>{{ match.item.item_date.strftime('%b %d, %Y') }}</dd>{% if match.item.colour %}<dt>Colour</dt><dd>{{ match.item.colour }}</dd>{% endif %}</dl>
+  <details><summary>See score breakdown</summary><ul>{% for key, weight in config.MATCH_WEIGHTS.items() %}<li>{{ key|capitalize }} ({{ weight }}% weight): {{ match.components[key]|round|int }}%</li>{% endfor %}</ul></details>
+</article>{% endfor %}</section>
+{% endif %}
+<style>.match-guide{display:flex;flex-wrap:wrap;gap:16px;background:#f2e5a0;padding:15px 18px;border-radius:12px;margin:22px 0}.match-list{display:grid;gap:15px}.match-card{background:white;border:1px solid #e8e6df;border-radius:15px;padding:22px}.match-card header{display:flex;justify-content:space-between;align-items:center}.match-card h2{margin:13px 0 4px}.match-card p{margin:8px 0}.score{font-size:24px;color:#405c35}.match-card dl{display:grid;grid-template-columns:80px 1fr;gap:6px;font-size:14px}.match-card dd{margin:0}.match-card dt{color:#777}.match-card details{border-top:1px solid #eee;padding-top:12px}.match-card summary{cursor:pointer;color:#3c5744}</style>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Edit listing · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">YOUR LISTING</p><h1>Edit {{ item.name }}</h1>
+<form class="card" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="name">Item name</label><input id="name" name="name" maxlength="120" required value="{{ request.form.get('name', item.name) }}">
+  <label for="description">Description</label><textarea id="description" name="description" rows="4" maxlength="3000" required>{{ request.form.get('description', item.description) }}</textarea>
+  <label for="category">Category</label><select id="category" name="category" required>{% for category in categories %}<option value="{{ category }}" {% if request.form.get('category', item.category) == category %}selected{% endif %}>{{ category }}</option>{% endfor %}</select>
+  <label for="location">Location</label><input id="location" name="location" maxlength="160" required value="{{ request.form.get('location', item.location) }}">
+  <label for="item_date">{% if item.report_type == 'lost' %}Date lost{% else %}Date found{% endif %}</label><input id="item_date" name="item_date" type="date" max="{{ today }}" required value="{{ request.form.get('item_date', item.item_date.isoformat()) }}">
+  <label for="colour">Colour</label><input id="colour" name="colour" maxlength="50" value="{{ request.form.get('colour', item.colour or '') }}">
+  <label for="image">Replace photo (optional)</label><input id="image" name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+  {% if item.image_filename %}<label><input type="checkbox" name="remove_image" value="yes" style="width:auto"> Remove current photo</label>{% endif %}
+  <button type="submit">Save changes</button>
+</form>
+<style>.card textarea,.card select,.card input[type=date]{width:100%;padding:12px;border:1px solid #d9d8d0;border-radius:9px;font:inherit;background:white}.card input[type=checkbox]{width:auto}</style>
+{% endblock %}

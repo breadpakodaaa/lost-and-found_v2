@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Claim {{ item.name }} · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">ITEM CLAIM</p><h1>Claim “{{ item.name }}”</h1>
+<p>Describe why you believe this item belongs to you. Add identifying details that help a reviewer verify your claim. Your claim will be reviewed; submitting it does not guarantee approval.</p>
+<section class="card"><p><strong>Found at:</strong> {{ item.location }} · {{ item.item_date.strftime('%b %d, %Y') }}</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="description">Why do you believe this is yours?</label><textarea id="description" name="description" rows="4" maxlength="2000" required>{{ request.form.get('description', '') }}</textarea>
+  <label for="identifying_information">Additional identifying details</label><textarea id="identifying_information" name="identifying_information" rows="4" maxlength="2000" required>{{ request.form.get('identifying_information', '') }}</textarea>
+  <p class="muted">Keep private details in this form. They are not displayed on the public listing.</p><button type="submit">Submit claim</button>
+</form></section>
+<style>textarea{width:100%;padding:12px;border:1px solid #d9d8d0;border-radius:9px;font:inherit}</style>
+{% endblock %}

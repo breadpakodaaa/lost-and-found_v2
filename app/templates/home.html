@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">CAMPUS COMMUNITY</p>
+<h1>Good to have you here{% if current_user %}, {{ current_user.name }}{% endif %}.</h1>
+<p>Give lost belongings a better chance of finding their way back. Report an item, browse campus listings, and review possible matches.</p>
+<section class="card" style="background:#f2e5a0; margin-top:28px">
+  <h2>Start with an account</h2>
+  <p>Report missing belongings, share something you found, or browse the latest campus listings.</p>
+  {% if current_user %}<a class="button" href="{{ url_for('items.report', report_type='lost') }}">Report lost</a> <a class="button" href="{{ url_for('items.report', report_type='found') }}">Report found</a>{% else %}<a class="button" href="{{ url_for('auth.register') }}">Create account</a>{% endif %}
+  <a class="button" href="{{ url_for('items.browse') }}" style="background:#525b45">Browse listings</a>
+</section>
+{% endblock %}

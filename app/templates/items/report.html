@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Report {{ report_type }} item · Campus Lost &amp; Found{% endblock %}
+{% block content %}
+<p class="muted">CAMPUS LISTING</p>
+<h1>Report a {{ report_type }} item</h1>
+<p>Share enough detail to help someone recognise it. Your contact details are not shown on the public listing.</p>
+<form class="card report-form" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="name">Item name</label><input id="name" name="name" maxlength="120" required value="{{ form_values.get('name', '') }}" placeholder="e.g. Water bottle">
+  <label for="description">Description</label><textarea id="description" name="description" maxlength="3000" rows="4" required>{{ form_values.get('description', '') }}</textarea>
+  <label for="category">Category</label><select id="category" name="category" required><option value="">Choose a category</option>{% for category in categories %}<option value="{{ category }}" {% if form_values.get('category') == category %}selected{% endif %}>{{ category }}</option>{% endfor %}</select>
+  <label for="location">{% if report_type == 'lost' %}Last seen location{% else %}Found location{% endif %}</label><input id="location" name="location" maxlength="160" required value="{{ form_values.get('location', '') }}" placeholder="e.g. Main library, ground floor">
+  <label for="item_date">{% if report_type == 'lost' %}Date lost{% else %}Date found{% endif %}</label><input id="item_date" name="item_date" type="date" max="{{ today }}" required value="{{ form_values.get('item_date', today) }}">
+  <label for="colour">Colour <span class="muted">(optional)</span></label><input id="colour" name="colour" maxlength="50" value="{{ form_values.get('colour', '') }}">
+  <label for="image">Photo <span class="muted">(optional, up to 5 MB)</span></label><input id="image" name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+  <button type="submit">Post {{ report_type }} report</button>
+</form>
+<style>.report-form textarea,.report-form select{width:100%;padding:12px 13px;border:1px solid #d9d8d0;border-radius:9px;font:inherit;background:white}.report-form input[type=file]{padding:10px}</style>
+{% endblock %}
