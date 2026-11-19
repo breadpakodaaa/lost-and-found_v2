@@ -2,37 +2,6 @@
 
 This started as my Python course project idea: a place for lost campus belongings to find their way home. Version 1 was the starting point; Version 2 has had a rather enthusiastic upgrade. It now includes student accounts, authentication and authorisation, an admin area, item claims, and a fuzzy matching feature that tries to connect the lost reports with the found ones. It is still a learning project, so the matches are suggestions for people to review.
 
-## Run locally
-
-Install the dependencies from this folder:
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-py -m pip install -r requirements.txt
-```
-
-The app needs a private `SECRET_KEY`. Generate one with:
-
-```powershell
-py -c "import secrets; print(secrets.token_hex(32))"
-```
-
-Create a `.env` file in the project folder and add the generated key and local database settings:
-
-```text
-SECRET_KEY=paste-your-generated-key-here
-DATABASE_URL=sqlite:///campus_lost_found.db
-SESSION_COOKIE_SECURE=false
-```
-
-Keep `.env` private; Git ignores it. Start the app with:
-
-```powershell
-py run.py
-```
-
-Then open `http://127.0.0.1:5000/` in your browser.
 
 ## Features
 
@@ -67,26 +36,3 @@ By default, scores below 50% are not shown. Scores from 50–69% are labelled we
 
 These scores are just clues. A high score does not prove that two reports describe the same object; a person should review the details and handle any claim.
 
-## Screenshots
-
-Add screenshots of the running app below:
-
-### Home page
-
-_Screenshot placeholder: home page_
-
-### Browse and search
-
-_Screenshot placeholder: browse listings and filters_
-
-### Match suggestions
-
-_Screenshot placeholder: possible matches and score breakdown_
-
-### Student dashboard
-
-_Screenshot placeholder: student dashboard_
-
-### Admin dashboard
-
-_Screenshot placeholder: admin dashboard and claim review_
